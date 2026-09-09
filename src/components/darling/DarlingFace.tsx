@@ -18,12 +18,12 @@ type Props = {
   /** Disables the idle blink/glance loop (used for tiny static marks). */
   still?: boolean;
   /** -1..1 on each axis: where the eyes should look. */
-  lookAt?: { x: number; y: number };
+  lookAt?: { x: number; y: number } | undefined;
   /** Replaces the eyes with a clock readout. */
-  clock?: string | null;
+  clock?: string | null | undefined;
   /** Forces the eyes shut, e.g. peek-a-boo. */
   eyesClosed?: boolean;
-  title?: string;
+  title?: string | undefined;
 };
 
 /**
