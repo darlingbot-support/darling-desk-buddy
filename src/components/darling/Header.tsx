@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Heart, Menu, X } from "lucide-react";
+import { Heart, Menu, Volume2, VolumeX, X } from "lucide-react";
 
 import { DarlingFace } from "./DarlingFace";
 import { scrollToId } from "./scroll";
+import { useDarlingAudio } from "./audio";
 
 const links = [
   { id: "why", label: "Why Darling" },
   { id: "moods", label: "Moods" },
+  { id: "playground", label: "Try it" },
   { id: "features", label: "What it does" },
 ];
 
