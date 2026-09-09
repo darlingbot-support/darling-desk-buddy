@@ -171,7 +171,7 @@ function Eye({
     );
   }
 
-  const geometry: Record<string, { rx: number; ry: number; dy: number }> = {
+  const geometry: Record<Mood, { rx: number; ry: number; dy: number }> = {
     curious: { rx: side === "left" ? 20 : 15, ry: side === "left" ? 24 : 18, dy: -4 },
     surprised: { rx: 25, ry: 27, dy: -2 },
     excited: { rx: 19, ry: 26, dy: -2 },
@@ -179,7 +179,7 @@ function Eye({
     happy: { rx: 19, ry: 22, dy: 0 },
     focus: { rx: 20, ry: 8, dy: 0 },
   };
-  const g = geometry[mood] ?? geometry.curious;
+  const g = geometry[mood];
 
   return (
     <g style={{ transition }}>
