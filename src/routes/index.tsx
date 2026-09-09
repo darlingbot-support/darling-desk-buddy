@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { DarlingAudioProvider } from "@/components/darling/audio";
 import { Header } from "@/components/darling/Header";
 import { Hero } from "@/components/darling/Hero";
 import { WhyDarling } from "@/components/darling/WhyDarling";
 import { MoodDemo } from "@/components/darling/MoodDemo";
+import { Playground } from "@/components/darling/Playground";
 import { Features } from "@/components/darling/Features";
 import { EarlyAccess } from "@/components/darling/EarlyAccess";
 import { Footer } from "@/components/darling/Footer";
@@ -28,16 +30,19 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-cream text-charcoal">
-      <Header />
-      <main>
-        <Hero />
-        <WhyDarling />
-        <MoodDemo />
-        <Features />
-        <EarlyAccess />
-      </main>
-      <Footer />
-    </div>
+    <DarlingAudioProvider>
+      <div className="min-h-screen bg-cream text-charcoal">
+        <Header />
+        <main>
+          <Hero />
+          <WhyDarling />
+          <MoodDemo />
+          <Playground />
+          <Features />
+          <EarlyAccess />
+        </main>
+        <Footer />
+      </div>
+    </DarlingAudioProvider>
   );
 }
