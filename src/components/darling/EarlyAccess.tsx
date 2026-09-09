@@ -24,7 +24,7 @@ export function EarlyAccess() {
   };
 
   return (
-    <section id="early-access" className="px-5 py-16 sm:px-8 sm:py-24">
+    <section id="early-access" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-24">
       <div className="mx-auto max-w-4xl overflow-hidden rounded-[2.5rem] bg-charcoal px-6 py-12 text-milk shadow-soft sm:px-12 sm:py-16">
         <div className="grid gap-10 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div className="min-w-0">

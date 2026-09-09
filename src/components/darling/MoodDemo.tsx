@@ -52,7 +52,7 @@ export function MoodDemo() {
   const current = moods.find((m) => m.id === active)!;
 
   return (
-    <section id="moods" className="px-5 py-16 sm:px-8 sm:py-24">
+    <section id="moods" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-24">
       <div className="mx-auto max-w-5xl">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-[0.18em] text-mauve uppercase">

@@ -8,7 +8,7 @@ const promises = [
 
 export function WhyDarling() {
   return (
-    <section id="why" className="px-5 py-16 sm:px-8 sm:py-24">
+    <section id="why" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-24">
       <div className="mx-auto max-w-3xl">
         <p className="text-xs font-semibold tracking-[0.18em] text-mauve uppercase">Why Darling</p>
         <h2 className="mt-4 font-display text-3xl leading-tight font-extrabold text-charcoal sm:text-4xl">
