@@ -31,7 +31,7 @@ Darling is always drawn as a rounded body with a front screen face. No hands, no
 
 **5. Feature story** — Offset editorial cards, each with a small face cue and one plain explanation: Expressive Face, Mood System, Touch Reaction, Motion Reaction, Clock Mode, Focus Mode, Mini-Games, Local Wake Word, 100% Offline.
 
-**6. Early access** — The strongest moment on the page. Email field only, gentle validation, then the form is replaced with "You're on Darling's early list. We'll keep you close to the first drop." Shows the ₹3,999 target offer and the 23 October 2026 planned first drop, worded so nothing implies a purchase or guaranteed stock.
+**6. Early access** — The strongest moment on the page. Email field only, gentle validation, then the form is replaced with "You're on Darling's early list. We'll keep you close to the first drop." Marked simply as "Launching soon" — no price and no launch date anywhere on the page, and nothing implying a purchase or guaranteed stock.
 
 **7. Footer** — Instagram, YouTube, Facebook, X, and darlingbot.support@gmail.com as a clickable mail link, plus a short project-status note.
 
