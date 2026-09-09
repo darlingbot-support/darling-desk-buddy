@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-import { DarlingFace, type Mood } from "./DarlingFace";
+import { type Mood } from "./DarlingFace";
+import { DarlingStage } from "./DarlingStage";
+import { useDarlingAudio } from "./audio";
 
 const moods: { id: Mood; label: string; caption: string; description: string }[] = [
   {
