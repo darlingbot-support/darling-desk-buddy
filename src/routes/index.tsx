@@ -1,24 +1,43 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { Header } from "@/components/darling/Header";
+import { Hero } from "@/components/darling/Hero";
+import { WhyDarling } from "@/components/darling/WhyDarling";
+import { MoodDemo } from "@/components/darling/MoodDemo";
+import { Features } from "@/components/darling/Features";
+import { EarlyAccess } from "@/components/darling/EarlyAccess";
+import { Footer } from "@/components/darling/Footer";
+
+const title = "Darling — A little companion for your everyday space";
+const description =
+  "Darling is a small expressive desk companion with a big heart. Offline, app-free, and full of personality. Join the early-access list.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-cream text-charcoal">
+      <Header />
+      <main>
+        <Hero />
+        <WhyDarling />
+        <MoodDemo />
+        <Features />
+        <EarlyAccess />
+      </main>
+      <Footer />
     </div>
   );
 }
