@@ -1,6 +1,6 @@
 import { Heart, ArrowDown } from "lucide-react";
 
-import { DarlingFace } from "./DarlingFace";
+import { DarlingStage } from "./DarlingStage";
 import { scrollToId } from "./scroll";
 
 export function Hero() {
@@ -52,21 +52,19 @@ export function Hero() {
           <div className="relative mx-auto aspect-square w-full max-w-md">
             <div
               aria-hidden
-              className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_45%,var(--milk-white)_0%,var(--blush)_58%,transparent_72%)] opacity-80"
-            />
-            <div
-              aria-hidden
               className="absolute inset-6 animate-halo rounded-full border border-milk/70 shadow-[0_0_80px_-10px_var(--blush)]"
             />
-            <DarlingFace
-              className="absolute inset-x-[12%] top-[20%] w-[76%] drop-shadow-[0_24px_40px_rgba(33,28,34,0.18)]"
+            <DarlingStage
+              mood="curious"
+              className="size-full"
               title="Darling, a small rounded desk companion with a glossy screen face"
             />
-            <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-charcoal/85 px-3 py-1 text-[11px] font-medium text-milk">
-              Concept visual · prototype in progress
+            <span className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-charcoal/85 px-3 py-1 text-[11px] font-medium text-milk">
+              Concept visual · pat it, it follows your cursor
             </span>
           </div>
         </div>
+
       </div>
     </section>
   );

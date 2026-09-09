@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-import { DarlingFace, type Mood } from "./DarlingFace";
+import { type Mood } from "./DarlingFace";
+import { DarlingStage } from "./DarlingStage";
+import { useDarlingAudio } from "./audio";
 
 const moods: { id: Mood; label: string; caption: string; description: string }[] = [
   {
@@ -45,11 +47,20 @@ const moods: { id: Mood; label: string; caption: string; description: string }[]
     description:
       "Tall bright eyes and quick little sparkles. Darling gets like this after a game or a win on the focus timer.",
   },
+  {
+    id: "playful",
+    label: "Playful",
+    caption: "Up to something",
+    description:
+      "A cheeky wink and a sparkle. This is the face that starts a peek-a-boo game when you're near.",
+  },
 ];
 
 export function MoodDemo() {
   const [active, setActive] = useState<Mood>("curious");
+  const { play } = useDarlingAudio();
   const current = moods.find((m) => m.id === active)!;
+
 
   return (
     <section id="moods" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-24">
@@ -68,14 +79,12 @@ export function MoodDemo() {
         </div>
 
         <div className="mt-10 grid gap-6 rounded-[2.5rem] bg-milk p-6 shadow-soft sm:p-8 lg:grid-cols-[minmax(0,1fr)_1.1fr] lg:items-center">
-          <div className="relative mx-auto aspect-square w-full max-w-xs">
-            <div
-              aria-hidden
-              className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_50%,var(--blush)_0%,transparent_70%)] transition-opacity duration-500"
-              style={{ opacity: active === "sleepy" ? 0.35 : 0.85 }}
-            />
-            <DarlingFace mood={active} className="absolute inset-x-[8%] top-[12%] w-[84%]" />
-          </div>
+          <DarlingStage
+            mood={active}
+            className="mx-auto aspect-square w-full max-w-xs"
+            title={`Darling looking ${active}`}
+          />
+
 
           <div>
             <div
@@ -88,7 +97,11 @@ export function MoodDemo() {
                 return (
                   <button
                     key={m.id}
-                    onClick={() => setActive(m.id)}
+                    onClick={() => {
+                      setActive(m.id);
+                      play("mood");
+                    }}
+
                     aria-pressed={selected}
                     className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-milk focus-visible:outline-none ${
                       selected

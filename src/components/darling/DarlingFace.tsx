@@ -1,37 +1,61 @@
 import { useEffect, useRef, useState } from "react";
 
-export type Mood = "curious" | "focus" | "sleepy" | "surprised" | "happy" | "excited";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+
+export type Mood =
+  | "curious"
+  | "focus"
+  | "sleepy"
+  | "surprised"
+  | "happy"
+  | "excited"
+  | "playful"
+  | "love";
 
 type Props = {
   mood?: Mood;
   className?: string;
-  /** Disables the idle glance + blink loop (used for small static cues). */
+  /** Disables the idle blink/glance loop (used for tiny static marks). */
   still?: boolean;
-  title?: string;
+  /** -1..1 on each axis: where the eyes should look. */
+  lookAt?: { x: number; y: number } | undefined;
+  /** Replaces the eyes with a clock readout. */
+  clock?: string | null | undefined;
+  /** Forces the eyes shut, e.g. peek-a-boo. */
+  eyesClosed?: boolean;
+  title?: string | undefined;
 };
 
 /**
  * Darling's physical form: a compact rounded casing with a glossy screen face.
  * No arms, no legs, no antenna — the personality lives entirely in the eyes.
  */
-export function DarlingFace({ mood = "happy", className, still = false, title }: Props) {
+export function DarlingFace({
+  mood = "happy",
+  className,
+  still = false,
+  lookAt,
+  clock = null,
+  eyesClosed = false,
+  title,
+}: Props) {
   const [blink, setBlink] = useState(false);
-  const [glance, setGlance] = useState(0);
+  const [idleGlance, setIdleGlance] = useState(0);
   const reduced = usePrefersReducedMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (still || reduced) return;
+    if (still || reduced || clock) return;
     let cancelled = false;
     const loop = () => {
-      const wait = 2200 + Math.random() * 3600;
+      const wait = mood === "sleepy" ? 3000 + Math.random() * 2000 : 2200 + Math.random() * 3600;
       timer.current = setTimeout(() => {
         if (cancelled) return;
         setBlink(true);
-        setTimeout(() => !cancelled && setBlink(false), 130);
-        if (Math.random() > 0.55) {
-          setGlance(Math.random() > 0.5 ? 5 : -5);
-          setTimeout(() => !cancelled && setGlance(0), 900);
+        setTimeout(() => !cancelled && setBlink(false), mood === "sleepy" ? 320 : 130);
+        if (!lookAt && Math.random() > 0.55) {
+          setIdleGlance(Math.random() > 0.5 ? 5 : -5);
+          setTimeout(() => !cancelled && setIdleGlance(0), 900);
         }
         loop();
       }, wait);
@@ -41,9 +65,11 @@ export function DarlingFace({ mood = "happy", className, still = false, title }:
       cancelled = true;
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [still, reduced]);
+  }, [still, reduced, mood, lookAt, clock]);
 
-  const lidClosed = blink || mood === "sleepy";
+  const lidClosed = eyesClosed || blink || mood === "sleepy";
+  const offsetX = lookAt ? clamp(lookAt.x, -1, 1) * 9 : idleGlance;
+  const offsetY = lookAt ? clamp(lookAt.y, -1, 1) * 6 : 0;
 
   return (
     <svg
@@ -63,7 +89,7 @@ export function DarlingFace({ mood = "happy", className, still = false, title }:
           <stop offset="100%" stopColor="#171317" />
         </linearGradient>
         <radialGradient id="df-cheek">
-          <stop offset="0%" stopColor="var(--blush)" stopOpacity="0.85" />
+          <stop offset="0%" stopColor="var(--blush)" stopOpacity="0.9" />
           <stop offset="100%" stopColor="var(--blush)" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -98,21 +124,38 @@ export function DarlingFace({ mood = "happy", className, still = false, title }:
         opacity="0.14"
       />
 
-      {/* cheeks */}
-      <ellipse cx="104" cy="152" rx="16" ry="10" fill="url(#df-cheek)" />
-      <ellipse cx="216" cy="152" rx="16" ry="10" fill="url(#df-cheek)" />
-
-      <g
-        style={{
-          transform: `translateX(${glance}px)`,
-          transition: reduced ? "none" : "transform 700ms cubic-bezier(.22,1,.36,1)",
-        }}
-      >
-        <Eye side="left" mood={mood} closed={lidClosed} reduced={reduced} />
-        <Eye side="right" mood={mood} closed={lidClosed} reduced={reduced} />
+      {/* cheeks — brighter when Darling is feeling loved */}
+      <g style={{ transition: reduced ? "none" : "opacity 400ms ease" }} opacity={mood === "love" ? 1 : 0.75}>
+        <ellipse cx="104" cy="152" rx={mood === "love" ? 20 : 16} ry={mood === "love" ? 13 : 10} fill="url(#df-cheek)" />
+        <ellipse cx="216" cy="152" rx={mood === "love" ? 20 : 16} ry={mood === "love" ? 13 : 10} fill="url(#df-cheek)" />
       </g>
 
-      {mood === "excited" ? (
+      {clock ? (
+        <text
+          x="160"
+          y="136"
+          textAnchor="middle"
+          fill="var(--milk-white)"
+          fontFamily="var(--font-display), monospace"
+          fontSize="42"
+          fontWeight="700"
+          letterSpacing="2"
+        >
+          {clock}
+        </text>
+      ) : (
+        <g
+          style={{
+            transform: `translate(${offsetX}px, ${offsetY}px)`,
+            transition: reduced ? "none" : "transform 420ms cubic-bezier(.22,1,.36,1)",
+          }}
+        >
+          <Eye side="left" mood={mood} closed={lidClosed} reduced={reduced} />
+          <Eye side="right" mood={mood} closed={lidClosed} reduced={reduced} />
+        </g>
+      )}
+
+      {mood === "excited" || mood === "playful" ? (
         <g fill="var(--blush)" opacity="0.9">
           <path d="M258 62l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" />
           <path d="M66 176l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" />
@@ -136,6 +179,17 @@ function Eye({
   const cx = side === "left" ? 128 : 192;
   const cy = 122;
   const transition = reduced ? "none" : "all 320ms cubic-bezier(.22,1,.36,1)";
+
+  if (mood === "love" && !closed) {
+    return (
+      <path
+        d={heartPath(cx, cy, 1.5)}
+        fill="var(--blush)"
+        style={{ transition }}
+        className={reduced ? undefined : "animate-heartbeat"}
+      />
+    );
+  }
 
   if (closed) {
     return (
@@ -163,20 +217,34 @@ function Eye({
     );
   }
 
+  if (mood === "playful") {
+    // one winking arc, one wide eye
+    if (side === "left") {
+      return (
+        <path
+          d={`M${cx - 20} ${cy + 6} q20 -22 40 0`}
+          stroke="var(--milk-white)"
+          strokeWidth="8"
+          strokeLinecap="round"
+          fill="none"
+          style={{ transition }}
+        />
+      );
+    }
+  }
+
   if (mood === "focus") {
-    return (
-      <g style={{ transition }}>
-        <rect x={cx - 22} y={cy - 6} width="44" height="13" rx="6.5" fill="var(--milk-white)" />
-      </g>
-    );
+    return <rect x={cx - 22} y={cy - 6} width="44" height="13" rx="6.5" fill="var(--milk-white)" style={{ transition }} />;
   }
 
   const geometry: Record<Mood, { rx: number; ry: number; dy: number }> = {
     curious: { rx: side === "left" ? 20 : 15, ry: side === "left" ? 24 : 18, dy: -4 },
     surprised: { rx: 25, ry: 27, dy: -2 },
     excited: { rx: 19, ry: 26, dy: -2 },
+    playful: { rx: 20, ry: 24, dy: -2 },
     sleepy: { rx: 18, ry: 10, dy: 4 },
     happy: { rx: 19, ry: 22, dy: 0 },
+    love: { rx: 20, ry: 22, dy: 0 },
     focus: { rx: 20, ry: 8, dy: 0 },
   };
   const g = geometry[mood];
@@ -190,14 +258,11 @@ function Eye({
   );
 }
 
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const onChange = () => setReduced(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduced;
+function heartPath(cx: number, cy: number, s: number) {
+  const w = 14 * s;
+  return `M${cx} ${cy + w * 0.75} C${cx - w * 1.5} ${cy - w * 0.25} ${cx - w * 0.6} ${cy - w * 1.35} ${cx} ${cy - w * 0.35} C${cx + w * 0.6} ${cy - w * 1.35} ${cx + w * 1.5} ${cy - w * 0.25} ${cx} ${cy + w * 0.75}Z`;
+}
+
+function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
 }
