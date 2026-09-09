@@ -50,6 +50,7 @@ export function Header() {
           >
             {soundOn ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
           </button>
+          {links.map((l) => (
 
             <button
               key={l.id}
