@@ -47,11 +47,20 @@ const moods: { id: Mood; label: string; caption: string; description: string }[]
     description:
       "Tall bright eyes and quick little sparkles. Darling gets like this after a game or a win on the focus timer.",
   },
+  {
+    id: "playful",
+    label: "Playful",
+    caption: "Up to something",
+    description:
+      "A cheeky wink and a sparkle. This is the face that starts a peek-a-boo game when you're near.",
+  },
 ];
 
 export function MoodDemo() {
   const [active, setActive] = useState<Mood>("curious");
+  const { play } = useDarlingAudio();
   const current = moods.find((m) => m.id === active)!;
+
 
   return (
     <section id="moods" className="scroll-mt-24 px-5 py-16 sm:px-8 sm:py-24">
