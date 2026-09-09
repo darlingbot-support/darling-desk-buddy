@@ -14,6 +14,8 @@ const links = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { soundOn, toggleSound } = useDarlingAudio();
+
 
   const go = (id: string) => {
     setOpen(false);
@@ -39,8 +41,16 @@ export function Header() {
           </span>
         </button>
 
-        <nav className="hidden items-center gap-7 md:flex">
-          {links.map((l) => (
+        <nav className="hidden items-center gap-6 md:flex">
+          <button
+            onClick={toggleSound}
+            aria-pressed={soundOn}
+            aria-label={soundOn ? "Turn sound off" : "Turn sound on"}
+            className="grid size-9 place-items-center rounded-full bg-milk text-charcoal shadow-soft transition-transform hover:-translate-y-0.5"
+          >
+            {soundOn ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+          </button>
+
             <button
               key={l.id}
               onClick={() => go(l.id)}
@@ -58,14 +68,25 @@ export function Header() {
           </button>
         </nav>
 
-        <button
-          className="grid size-10 place-items-center rounded-full bg-milk text-charcoal shadow-soft md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            className="grid size-10 place-items-center rounded-full bg-milk text-charcoal shadow-soft"
+            onClick={toggleSound}
+            aria-pressed={soundOn}
+            aria-label={soundOn ? "Turn sound off" : "Turn sound on"}
+          >
+            {soundOn ? <Volume2 className="size-5" /> : <VolumeX className="size-5" />}
+          </button>
+          <button
+            className="grid size-10 place-items-center rounded-full bg-milk text-charcoal shadow-soft"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
+
       </div>
 
       {open ? (
