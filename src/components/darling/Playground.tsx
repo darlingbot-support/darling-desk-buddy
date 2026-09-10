@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Clock, Gamepad2, Pause, Play, RotateCcw, Sparkles, Timer } from "lucide-react";
+import { Clock, Gamepad2, Hand, Pause, Play, RotateCcw, Sparkles, Timer } from "lucide-react";
 
 import { DarlingStage } from "./DarlingStage";
+import { SensorLab } from "./SensorLab";
 import { type Mood } from "./DarlingFace";
 import { useDarlingAudio } from "./audio";
 
-type Tab = "focus" | "clock" | "game" | "wake";
+type Tab = "sensor" | "focus" | "clock" | "game" | "wake";
 
 const tabs: { id: Tab; label: string; icon: typeof Timer }[] = [
+  { id: "sensor", label: "Sensor test", icon: Hand },
   { id: "focus", label: "Focus mode", icon: Timer },
   { id: "clock", label: "Clock mode", icon: Clock },
   { id: "game", label: "Mini-game", icon: Gamepad2 },
