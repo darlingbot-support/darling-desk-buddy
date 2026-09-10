@@ -18,9 +18,29 @@ export function EarlyAccess() {
     }
     setError(null);
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 500));
-    setSubmitting(false);
-    setDone(true);
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/darlingbot.support@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          email: value,
+          _subject: "New Darling Early Access Signup!",
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`FormSubmit returned ${response.status}`);
+      }
+
+      setDone(true);
+    } catch {
+      setError("We couldn't send your signup just then. Please try again in a moment.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
