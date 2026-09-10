@@ -11,6 +11,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { TiltCard } from "./TiltCard";
+
 const features: { icon: LucideIcon; title: string; text: string }[] = [
   {
     icon: Eye,

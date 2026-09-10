@@ -1,5 +1,7 @@
 import { WifiOff, Smartphone, UserRoundX } from "lucide-react";
 
+import { TiltCard } from "./TiltCard";
+
 const promises = [
   { icon: Smartphone, label: "No app to install", text: "Plug it in and it's already itself." },
   { icon: UserRoundX, label: "No account, no subscription", text: "Nothing to sign up for, ever." },
