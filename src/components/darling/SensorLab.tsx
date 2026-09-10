@@ -181,7 +181,7 @@ export function SensorLab() {
           }}
           className={`absolute touch-none select-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:outline-none ${
             dragging ? "cursor-grabbing" : "cursor-grab"
-          } ${landed && !reduced ? "animate-land" : ""} ${reaction === "dizzy" && !reduced ? "animate-wobble" : ""}`}
+          }`}
           style={{
             left: pos.x,
             top: pos.y,
@@ -193,11 +193,17 @@ export function SensorLab() {
               : "transform 1200ms cubic-bezier(.22,1,.36,1), left 220ms cubic-bezier(.22,1,.36,1), top 220ms cubic-bezier(.22,1,.36,1)",
           }}
         >
-          <DarlingFace
-            mood={mood}
-            className="pointer-events-none size-full drop-shadow-[0_16px_26px_rgba(33,28,34,0.2)]"
-            title={`Darling in the sensor lab, feeling ${mood}`}
-          />
+          <div
+            className={`size-full ${landed && !reduced ? "animate-land" : ""} ${
+              reaction === "dizzy" && !reduced ? "animate-wobble" : ""
+            }`}
+          >
+            <DarlingFace
+              mood={mood}
+              className="pointer-events-none size-full drop-shadow-[0_16px_26px_rgba(33,28,34,0.2)]"
+              title={`Darling in the sensor lab, feeling ${mood}`}
+            />
+          </div>
 
           {/* sensor zones */}
           <span data-zone="head" className="absolute inset-x-[22%] top-0 h-[26%] rounded-t-full" />
