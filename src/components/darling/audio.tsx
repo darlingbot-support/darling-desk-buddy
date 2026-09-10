@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
 
-type Tone = "mood" | "pat" | "wake" | "tick" | "win";
+type Tone = "mood" | "pat" | "wake" | "tick" | "win" | "cry" | "grumpy" | "spin" | "sick";
 
 type AudioApi = {
   soundOn: boolean;
@@ -16,6 +16,10 @@ const notes: Record<Tone, number[]> = {
   wake: [523, 784, 1046],
   tick: [440],
   win: [659, 784, 988, 1318],
+  cry: [523, 466, 415, 370],
+  grumpy: [196, 165, 147],
+  spin: [523, 587, 659, 740, 831, 932],
+  sick: [330, 262, 208, 165],
 };
 
 export function DarlingAudioProvider({ children }: { children: ReactNode }) {
