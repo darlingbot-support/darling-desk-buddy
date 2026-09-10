@@ -19,7 +19,7 @@ const tabs: { id: Tab; label: string; icon: typeof Timer }[] = [
 const FOCUS_SECONDS = 25 * 60;
 
 export function Playground() {
-  const [tab, setTab] = useState<Tab>("focus");
+  const [tab, setTab] = useState<Tab>("sensor");
   const { play } = useDarlingAudio();
 
   // ---- focus timer -------------------------------------------------------
@@ -150,16 +150,37 @@ export function Playground() {
             })}
           </div>
 
-          <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_1.05fr] lg:items-center">
-            <DarlingStage
-              mood={mood}
-              clock={clock}
-              eyesClosed={eyesClosed}
-              className={`mx-auto aspect-square w-full max-w-xs ${awake ? "animate-perk" : ""}`}
-              title="Darling responding to the demo you picked"
-            />
+          <div
+            className={`grid gap-6 p-6 sm:p-8 ${
+              tab === "sensor" ? "" : "lg:grid-cols-[minmax(0,1fr)_1.05fr] lg:items-center"
+            }`}
+          >
+            {tab === "sensor" ? (
+              <SensorLab />
+            ) : (
+              <DarlingStage
+                mood={mood}
+                clock={clock}
+                eyesClosed={eyesClosed}
+                className={`mx-auto aspect-square w-full max-w-xs ${awake ? "animate-perk" : ""}`}
+                title="Darling responding to the demo you picked"
+              />
+            )}
 
             <div key={tab} className="animate-rise">
+              {tab === "sensor" ? (
+                <div>
+                  <h3 className="font-display text-2xl font-extrabold text-charcoal">
+                    Darling Sensor Lab
+                  </h3>
+                  <p className="mt-2 text-charcoal/70">
+                    Pick Darling up and move it anywhere on the mat, then poke its touch zones. Pats
+                    on top are welcome, the sides are far too ticklish and get tears, and a pat
+                    underneath gets a proper huff. Spin it right round and it goes green.
+                  </p>
+                </div>
+              ) : null}
+
               {tab === "focus" ? (
                 <div>
                   <h3 className="font-display text-2xl font-extrabold text-charcoal">
