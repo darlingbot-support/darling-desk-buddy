@@ -54,6 +54,7 @@ export function SensorLab() {
 
   const trigger = useCallback(
     (zone: Zone) => {
+      console.log("TRIGGER", zone);
       clearTimers();
       play(zoneCopy[zone].tone);
       setReaction(zone);
