@@ -11,6 +11,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { TiltCard } from "./TiltCard";
+
 const features: { icon: LucideIcon; title: string; text: string }[] = [
   {
     icon: Eye,
@@ -78,20 +80,22 @@ export function Features() {
 
         <div className="mt-12 space-y-4">
           {features.map((f, i) => (
-            <article
+            <TiltCard
+              as="article"
               key={f.title}
-              className={`grid gap-4 rounded-[2rem] bg-milk p-6 shadow-soft transition-transform hover:-translate-y-0.5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start sm:p-8 ${
+              tone={i % 2 === 0 ? "tick" : "mood"}
+              className={`group grid cursor-pointer gap-4 rounded-[2rem] bg-milk p-6 shadow-soft sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start sm:p-8 ${
                 i % 2 === 1 ? "lg:ml-16" : "lg:mr-16"
               }`}
             >
-              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-cream text-coral">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-cream text-coral transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:bg-coral group-hover:text-milk">
                 <f.icon className="size-5.5" aria-hidden />
               </span>
               <div className="min-w-0">
                 <h3 className="font-display text-xl font-extrabold text-charcoal">{f.title}</h3>
                 <p className="mt-2 leading-relaxed text-charcoal/70">{f.text}</p>
               </div>
-            </article>
+            </TiltCard>
           ))}
         </div>
       </div>

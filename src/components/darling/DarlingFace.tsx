@@ -10,7 +10,11 @@ export type Mood =
   | "happy"
   | "excited"
   | "playful"
-  | "love";
+  | "love"
+  | "crying"
+  | "angry"
+  | "dizzy"
+  | "sick";
 
 type Props = {
   mood?: Mood;
@@ -44,8 +48,10 @@ export function DarlingFace({
   const reduced = usePrefersReducedMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const noBlink = mood === "dizzy" || mood === "sick" || mood === "angry" || mood === "crying";
+
   useEffect(() => {
-    if (still || reduced || clock) return;
+    if (still || reduced || clock || noBlink) return;
     let cancelled = false;
     const loop = () => {
       const wait = mood === "sleepy" ? 3000 + Math.random() * 2000 : 2200 + Math.random() * 3600;
@@ -65,15 +71,19 @@ export function DarlingFace({
       cancelled = true;
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [still, reduced, mood, lookAt, clock]);
+  }, [still, reduced, mood, lookAt, clock, noBlink]);
 
-  const lidClosed = eyesClosed || blink || mood === "sleepy";
-  const offsetX = lookAt ? clamp(lookAt.x, -1, 1) * 9 : idleGlance;
-  const offsetY = lookAt ? clamp(lookAt.y, -1, 1) * 6 : 0;
+  const lidClosed = eyesClosed || (blink && !noBlink) || mood === "sleepy";
+  const offsetX = lookAt && !noBlink ? clamp(lookAt.x, -1, 1) * 9 : noBlink ? 0 : idleGlance;
+  const offsetY = lookAt && !noBlink ? clamp(lookAt.y, -1, 1) * 6 : 0;
+
+  const angry = mood === "angry";
+  const crying = mood === "crying";
+  const sick = mood === "sick";
 
   return (
     <svg
-      viewBox="0 0 320 260"
+      viewBox="0 0 320 300"
       className={className}
       role="img"
       aria-label={title ?? `Darling looking ${mood}`}
@@ -82,6 +92,10 @@ export function DarlingFace({
         <linearGradient id="df-casing" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--milk-white)" />
           <stop offset="100%" stopColor="var(--cream-deep)" />
+        </linearGradient>
+        <linearGradient id="df-casing-hot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--blush)" />
+          <stop offset="100%" stopColor="var(--coral)" />
         </linearGradient>
         <linearGradient id="df-screen" x1="0.2" y1="0" x2="0.8" y2="1">
           <stop offset="0%" stopColor="#3a323c" />
@@ -92,18 +106,30 @@ export function DarlingFace({
           <stop offset="0%" stopColor="var(--blush)" stopOpacity="0.9" />
           <stop offset="100%" stopColor="var(--blush)" stopOpacity="0" />
         </radialGradient>
+        <linearGradient id="df-goo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#9ede6b" />
+          <stop offset="100%" stopColor="#5fb83f" />
+        </linearGradient>
       </defs>
 
       {/* side casing discs (part of the shell, not limbs) */}
       <g>
-        <ellipse cx="42" cy="126" rx="24" ry="34" fill="url(#df-casing)" />
+        <ellipse cx="42" cy="126" rx="24" ry="34" fill={angry ? "url(#df-casing-hot)" : "url(#df-casing)"} />
         <ellipse cx="42" cy="126" rx="12" ry="18" fill="var(--blush)" opacity="0.55" />
-        <ellipse cx="278" cy="126" rx="24" ry="34" fill="url(#df-casing)" />
+        <ellipse cx="278" cy="126" rx="24" ry="34" fill={angry ? "url(#df-casing-hot)" : "url(#df-casing)"} />
         <ellipse cx="278" cy="126" rx="12" ry="18" fill="var(--blush)" opacity="0.55" />
       </g>
 
       {/* body shell */}
-      <rect x="46" y="26" width="228" height="206" rx="72" fill="url(#df-casing)" />
+      <rect
+        x="46"
+        y="26"
+        width="228"
+        height="206"
+        rx="72"
+        fill={angry ? "url(#df-casing-hot)" : "url(#df-casing)"}
+        style={{ transition: reduced ? "none" : "fill 400ms ease" }}
+      />
       <rect
         x="46"
         y="26"
@@ -115,6 +141,15 @@ export function DarlingFace({
         strokeOpacity="0.08"
         strokeWidth="2"
       />
+
+      {/* steam puffs when Darling is cross */}
+      {angry ? (
+        <g fill="var(--milk-white)" opacity="0.85">
+          <circle className={reduced ? undefined : "animate-steam"} cx="86" cy="34" r="9" />
+          <circle className={reduced ? undefined : "animate-steam"} style={{ animationDelay: "300ms" }} cx="234" cy="34" r="9" />
+          <circle className={reduced ? undefined : "animate-steam"} style={{ animationDelay: "600ms" }} cx="110" cy="24" r="6" />
+        </g>
+      ) : null}
 
       {/* screen face */}
       <rect x="70" y="50" width="180" height="146" rx="56" fill="url(#df-screen)" />
@@ -155,6 +190,42 @@ export function DarlingFace({
         </g>
       )}
 
+      {/* tears */}
+      {crying ? (
+        <g fill="#8fd3f4">
+          {[0, 1, 2].map((i) => (
+            <g key={`tl${i}`}>
+              <path
+                className={reduced ? undefined : "animate-tear"}
+                style={{ animationDelay: `${i * 420}ms` }}
+                d={tearPath(126, 150)}
+              />
+              <path
+                className={reduced ? undefined : "animate-tear"}
+                style={{ animationDelay: `${i * 420 + 210}ms` }}
+                d={tearPath(194, 150)}
+              />
+            </g>
+          ))}
+        </g>
+      ) : null}
+
+      {/* cartoon sick stream */}
+      {sick ? (
+        <g>
+          <path
+            className={reduced ? undefined : "animate-vomit"}
+            d="M148 190 q12 30 -2 56 q16 14 26 0 q-12 -28 0 -56z"
+            fill="url(#df-goo)"
+          />
+          <g fill="#7ccf55" className={reduced ? undefined : "animate-vomit"} style={{ animationDelay: "260ms" }}>
+            <circle cx="140" cy="252" r="7" />
+            <circle cx="176" cy="262" r="5" />
+            <circle cx="160" cy="272" r="9" />
+          </g>
+        </g>
+      ) : null}
+
       {mood === "excited" || mood === "playful" ? (
         <g fill="var(--blush)" opacity="0.9">
           <path d="M258 62l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" />
@@ -179,6 +250,68 @@ function Eye({
   const cx = side === "left" ? 128 : 192;
   const cy = 122;
   const transition = reduced ? "none" : "all 320ms cubic-bezier(.22,1,.36,1)";
+
+  if (mood === "dizzy") {
+    return (
+      <g style={{ transition }}>
+        <path
+          d={spiralPath(cx, cy, 22)}
+          fill="none"
+          stroke="var(--milk-white)"
+          strokeWidth="5"
+          strokeLinecap="round"
+          className={reduced ? undefined : "animate-swirl"}
+          style={{ transformOrigin: `${cx}px ${cy}px` }}
+        />
+      </g>
+    );
+  }
+
+  if (mood === "sick") {
+    return (
+      <path
+        d={`M${cx - 22} ${cy} q11 -12 22 0 q11 12 22 0`}
+        fill="none"
+        stroke="#9ede6b"
+        strokeWidth="7"
+        strokeLinecap="round"
+        style={{ transition }}
+      />
+    );
+  }
+
+  if (mood === "angry") {
+    const inner = side === "left" ? 1 : -1;
+    return (
+      <g style={{ transition }}>
+        <ellipse cx={cx} cy={cy + 4} rx="20" ry="16" fill="var(--coral)" />
+        <circle cx={cx} cy={cy + 4} r="7" fill="var(--charcoal)" opacity="0.55" />
+        <path
+          d={`M${cx - 22 * inner} ${cy - 20} L${cx + 20 * inner} ${cy - 6}`}
+          stroke="var(--milk-white)"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+      </g>
+    );
+  }
+
+  if (mood === "crying") {
+    return (
+      <g style={{ transition }}>
+        <ellipse cx={cx} cy={cy + 2} rx="20" ry="23" fill="var(--milk-white)" />
+        <circle cx={cx} cy={cy + 6} r="9" fill="#8fd3f4" opacity="0.85" />
+        <path
+          d={`M${cx - 20} ${cy - 22} q20 -12 40 2`}
+          stroke="var(--milk-white)"
+          strokeWidth="6"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.8"
+        />
+      </g>
+    );
+  }
 
   if (mood === "love" && !closed) {
     return (
@@ -246,6 +379,10 @@ function Eye({
     happy: { rx: 19, ry: 22, dy: 0 },
     love: { rx: 20, ry: 22, dy: 0 },
     focus: { rx: 20, ry: 8, dy: 0 },
+    crying: { rx: 20, ry: 23, dy: 2 },
+    angry: { rx: 20, ry: 16, dy: 4 },
+    dizzy: { rx: 20, ry: 20, dy: 0 },
+    sick: { rx: 20, ry: 20, dy: 0 },
   };
   const g = geometry[mood];
 
@@ -261,6 +398,25 @@ function Eye({
 function heartPath(cx: number, cy: number, s: number) {
   const w = 14 * s;
   return `M${cx} ${cy + w * 0.75} C${cx - w * 1.5} ${cy - w * 0.25} ${cx - w * 0.6} ${cy - w * 1.35} ${cx} ${cy - w * 0.35} C${cx + w * 0.6} ${cy - w * 1.35} ${cx + w * 1.5} ${cy - w * 0.25} ${cx} ${cy + w * 0.75}Z`;
+}
+
+function tearPath(cx: number, cy: number) {
+  return `M${cx} ${cy} c6 8 9 12 9 17 a9 9 0 0 1 -18 0 c0 -5 3 -9 9 -17z`;
+}
+
+function spiralPath(cx: number, cy: number, maxR: number) {
+  const points: string[] = [];
+  const turns = 2.4;
+  const steps = 60;
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const angle = t * turns * Math.PI * 2;
+    const r = t * maxR;
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    points.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)}`);
+  }
+  return points.join(" ");
 }
 
 function clamp(v: number, min: number, max: number) {
