@@ -32,11 +32,11 @@ export function WhyDarling() {
 
         <ul className="mt-10 grid gap-4 sm:grid-cols-3">
           {promises.map((p) => (
-            <li key={p.label} className="rounded-3xl bg-milk p-5 shadow-soft">
-              <p.icon className="size-5 text-coral" aria-hidden />
+            <TiltCard as="li" key={p.label} tone="pat" className="group cursor-pointer rounded-3xl bg-milk p-5 shadow-soft">
+              <p.icon className="size-5 text-coral transition-transform duration-300 group-hover:scale-125 group-hover:-rotate-6" aria-hidden />
               <p className="mt-3 font-display font-bold text-charcoal">{p.label}</p>
               <p className="mt-1 text-sm text-mauve">{p.text}</p>
-            </li>
+            </TiltCard>
           ))}
         </ul>
       </div>
